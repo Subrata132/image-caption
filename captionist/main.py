@@ -1,7 +1,9 @@
+import torch
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
 from data_loader import LoadData
 from data_util import Collator
+from model import ImageEncoder
 
 
 def main():
@@ -30,10 +32,14 @@ def main():
         shuffle=True,
         collate_fn=collator
     )
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    image_encoder = ImageEncoder().to(device=device)
     images, captions = next(iter(data_loader))
-    print(images.shape, captions.shape)
+    image_encoded = image_encoder(images.to(device))
+    print(images.shape, captions.shape, image_encoded.shape, image_encoded[0].shape)
     images, captions = next(iter(data_loader))
-    print(images.shape, captions.shape)
+    image_encoded = image_encoder(images.to(device))
+    print(images.shape, captions.shape, image_encoded.shape, image_encoded[0].shape)
 
 
 if __name__ == '__main__':
