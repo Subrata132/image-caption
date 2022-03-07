@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as T
 from data_loader import LoadData
 from data_util import Collator
-from model import ImageEncoder
+from model import EncoderDecoder
 
 
 def main():
@@ -32,14 +32,24 @@ def main():
         shuffle=True,
         collate_fn=collator
     )
+    parameter_dict = {
+        'vocab_size': 5000,
+        'attention_dim': 256,
+        'encoder_dim': 2048,
+        'decoder_dim': 256,
+        'embed_size': 300,
+        'drop_rate': 0.3
+    }
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    image_encoder = ImageEncoder().to(device=device)
+    model = EncoderDecoder(
+        parameter_dict=parameter_dict,
+        device=device).to(device=device)
     images, captions = next(iter(data_loader))
-    image_encoded = image_encoder(images.to(device))
-    print(images.shape, captions.shape, image_encoded.shape, image_encoded[0].shape)
+    predictions, alphas = model(images.to(device), captions.to(device))
+    print(images.shape, captions.shape, predictions.shape, alphas.shape)
     images, captions = next(iter(data_loader))
-    image_encoded = image_encoder(images.to(device))
-    print(images.shape, captions.shape, image_encoded.shape, image_encoded[0].shape)
+    predictions, alphas = model(images.to(device), captions.to(device))
+    print(images.shape, captions.shape, predictions.shape, alphas.shape)
 
 
 if __name__ == '__main__':
