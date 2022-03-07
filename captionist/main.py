@@ -7,7 +7,7 @@ from model import EncoderDecoder
 
 
 def main():
-    batch_size = 32
+    batch_size = 16
     num_worker = 0
     transform = T.Compose([
         T.Resize(256),
@@ -33,7 +33,7 @@ def main():
         collate_fn=collator
     )
     parameter_dict = {
-        'vocab_size': 5000,
+        'vocab_size': len(dataset.vocab),
         'attention_dim': 256,
         'encoder_dim': 2048,
         'decoder_dim': 256,
