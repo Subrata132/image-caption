@@ -1,0 +1,14 @@
+network_parameters:
+  attention_dim: 256
+  encoder_dim: 2048
+  decoder_dim: 256
+  embed_size: 300
+  drop_rate: 0.3
+
+training_parameters:
+  batch_size: 16
+  num_workers: 0
+
+data_locations:
+  img_dir: '../data/Images/'
+  caption_dir: '../data/captions.txt'
