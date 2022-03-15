@@ -7,10 +7,10 @@ import torchvision.transforms as T
 from data_loader import LoadData
 from data_util import Collator
 from model import EncoderDecoder
-from utils import parameter_loader, save_model
+from utils import parameter_loader, save_model, show_image
 
 
-def trainer():
+def trainer(train):
     parameters = parameter_loader()
     batch_size = parameters['training_parameters']['batch_size']
     num_worker = parameters['training_parameters']['num_workers']
@@ -45,14 +45,30 @@ def trainer():
         device=device).to(device=device)
     criterion = nn.CrossEntropyLoss(ignore_index=dataset.vocab.stoi["<PAD>"])
     optimizer = optim.Adam(model.parameters(), lr=parameters['training_parameters']['learning_rate'])
-    for epoch in range(parameters['training_parameters']['num_epoch']):
-        print(f'Epoch: {epoch+1}')
-        for idx, (images, captions) in tqdm(enumerate(iter(data_loader))):
-            images, captions = images.to(device=device), captions.to(device=device)
-            optimizer.zero_grad()
-            outputs, attentions = model(images, captions)
-            targets = captions[:, 1:]
-            loss = criterion(outputs.view(-1, parameter_dict['vocab_size']), targets.reshape(-1))
-            loss.backward()
-            optimizer.step()
-        save_model(model=model, parameters=parameters, epoch=epoch+1)
+    if train:
+        print_every = 100
+        for epoch in range(parameters['training_parameters']['num_epoch']):
+            print(f'Epoch: {epoch+1}')
+            for idx, (images, captions) in tqdm(enumerate(iter(data_loader))):
+                images, captions = images.to(device=device), captions.to(device=device)
+                optimizer.zero_grad()
+                outputs, attentions = model(images, captions)
+                targets = captions[:, 1:]
+                loss = criterion(outputs.view(-1, parameter_dict['vocab_size']), targets.reshape(-1))
+                loss.backward()
+                optimizer.step()
+                if (idx + 1) % print_every == 0:
+                    print("Epoch: {} loss: {:.5f}".format(epoch, loss.item()))
+                    model.eval()
+                    with torch.no_grad():
+                        dataiter = iter(data_loader)
+                        img, _ = next(dataiter)
+                        features = model.image_encoder(img[0:1].to(device))
+                        caps, alphas = model.decoder.generate_caption(features, vocab=dataset.vocab)
+                        caption = ' '.join(caps)
+                        show_image(img[0], title=caption)
+                    model.train()
+            save_model(model=model, parameters=parameters, epoch=epoch+1)
+    else:
+        model.load_state_dict(torch.load('model_data/attention_model_state.pth')['state_dict'])
+        print('model loaded')

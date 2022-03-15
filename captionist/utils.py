@@ -1,6 +1,7 @@
 import yaml
 import torch
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 
 def parameter_loader():
@@ -16,7 +17,21 @@ def save_model(model, parameters, epoch):
         'attention_dim': parameters['network_parameters']['attention_dim'],
         'encoder_dim': parameters['network_parameters']['encoder_dim'],
         'decoder_dim': parameters['network_parameters']['decoder_dim'],
-        'sate_dict': model.state_dict()
+        'state_dict': model.state_dict()
     }
     model_name = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p") + '.pth'
     torch.save(model_state, model_name)
+
+
+def show_image(img, title=None):
+    img[0] = img[0] * 0.229
+    img[1] = img[1] * 0.224
+    img[2] = img[2] * 0.225
+    img[0] += 0.485
+    img[1] += 0.456
+    img[2] += 0.406
+    img = img.numpy().transpose((1, 2, 0))
+    plt.imshow(img)
+    if title is not None:
+        plt.title(title)
+    plt.pause(0.001)
