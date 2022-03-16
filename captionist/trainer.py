@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import cv2
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,7 +8,7 @@ import torchvision.transforms as T
 from data_loader import LoadData
 from data_util import Collator
 from model import EncoderDecoder
-from utils import parameter_loader, save_model, show_image
+from utils import parameter_loader, save_model, show_image, view_image
 
 
 def trainer(train):
@@ -46,9 +47,8 @@ def trainer(train):
     criterion = nn.CrossEntropyLoss(ignore_index=dataset.vocab.stoi["<PAD>"])
     optimizer = optim.Adam(model.parameters(), lr=parameters['training_parameters']['learning_rate'])
     if train:
-        print_every = 100
         for epoch in range(parameters['training_parameters']['num_epoch']):
-            print(f'Epoch: {epoch+1}')
+            print(f'Epoch: {epoch + 1}')
             for idx, (images, captions) in tqdm(enumerate(iter(data_loader))):
                 images, captions = images.to(device=device), captions.to(device=device)
                 optimizer.zero_grad()
@@ -57,18 +57,19 @@ def trainer(train):
                 loss = criterion(outputs.view(-1, parameter_dict['vocab_size']), targets.reshape(-1))
                 loss.backward()
                 optimizer.step()
-                if (idx + 1) % print_every == 0:
-                    print("Epoch: {} loss: {:.5f}".format(epoch, loss.item()))
-                    model.eval()
-                    with torch.no_grad():
-                        dataiter = iter(data_loader)
-                        img, _ = next(dataiter)
-                        features = model.image_encoder(img[0:1].to(device))
-                        caps, alphas = model.decoder.generate_caption(features, vocab=dataset.vocab)
-                        caption = ' '.join(caps)
-                        show_image(img[0], title=caption)
-                    model.train()
-            save_model(model=model, parameters=parameters, epoch=epoch+1)
+            save_model(model=model, parameters=parameters, epoch=epoch + 1)
     else:
-        model.load_state_dict(torch.load('model_data/attention_model_state.pth')['state_dict'])
-        print('model loaded')
+        model.load_state_dict(torch.load('2022_03_08-12:24:48_PM.pth')['sate_dict'])
+        model.eval()
+        with torch.no_grad():
+            input_img_org = cv2.imread('../data/test_image/dog.jpeg')
+            input_img = cv2.resize(input_img_org, (256, 256), interpolation=cv2.INTER_LINEAR)
+            input_img = torch.from_numpy(input_img)
+            input_img = input_img.unsqueeze(0)
+            input_img = input_img.permute(0, 3, 1, 2)
+            input_img = input_img.float()
+            encoded_image = model.image_encoder(input_img.to(device))
+            caps, alphas = model.decoder.generate_caption(encoded_image, vocab=dataset.vocab)
+            caption = ' '.join(caps)
+            view_image(img=input_img_org, caption=caption)
+
