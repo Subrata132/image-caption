@@ -19,7 +19,7 @@ def save_model(model, parameters, epoch):
         'decoder_dim': parameters['network_parameters']['decoder_dim'],
         'state_dict': model.state_dict()
     }
-    model_name = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p") + '.pth'
+    model_name = f'model_{epoch}.pth'
     torch.save(model_state, model_name)
 
 
