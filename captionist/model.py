@@ -88,6 +88,30 @@ class Decoder(nn.Module):
             alphas[:, i] = alpha
         return predictions, alpha
 
+    def generate_caption(self, encoded_image, max_length=20, vocab=None):
+        batch_size = encoded_image.size(0)
+        h, c = self.initial_hidden_state(encoded_image=encoded_image)
+        alphas = []
+        word = torch.tensor(vocab.stoi['<SOS>']).view(1, -1).to(self.device)
+        embeds = self.embedding(word)
+        captions = []
+        for i in range(max_length):
+            alpha, context = self.attention(encoded_image, h)
+            alphas.append(alpha.cpu().detach().numpy())
+            lstm_input = torch.cat((embeds[:, 0], context), dim=1)
+            h, c = self.lstm_cell(lstm_input, (h, c))
+            output = self.linear(self.dropout(h))
+            output = output.view(batch_size, -1)
+            predicted_word_idx = output.argmax(dim=1)
+            captions.append(predicted_word_idx.item())
+            if vocab.itos[predicted_word_idx.item()] == "<EOS>":
+                break
+            embeds = self.embedding(predicted_word_idx.unsqueeze(0))
+        captions_word = []
+        for idx in captions:
+            captions_word.append(vocab.itos[idx])
+        return captions_word, alphas
+
 
 class EncoderDecoder(nn.Module):
     def __init__(self, parameter_dict, device):
