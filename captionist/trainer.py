@@ -66,7 +66,7 @@ def trainer(train):
             input_img = cv2.resize(input_img_org, (256, 256), interpolation=cv2.INTER_LINEAR)
             input_img = torch.from_numpy(input_img)
             input_img = input_img.unsqueeze(0)
-            input_img = input_img.permute(0, 3, 1, 2)
+            # input_img = input_img.permute(0, 3, 1, 2)
             input_img = input_img.float()
             encoded_image = model.image_encoder(input_img.to(device))
             caps, alphas = model.decoder.generate_caption(encoded_image, vocab=dataset.vocab)

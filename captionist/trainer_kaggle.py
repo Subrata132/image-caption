@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import cv2
+from PIL import Image
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -64,11 +65,14 @@ def trainer(train, parameters):
                 optimizer.step()
             save_model(model=model, parameters=parameters, epoch=epoch + 1)
     else:
-        model.load_state_dict(torch.load('2022_03_08-12:24:48_PM.pth')['sate_dict'])
+        model.load_state_dict(torch.load(parameters['model_dir'])['state_dict'])
         model.eval()
         with torch.no_grad():
-            input_img_org = cv2.imread('../data/test_image/dog.jpeg')
-            input_img = cv2.resize(input_img_org, (256, 256), interpolation=cv2.INTER_LINEAR)
+            # input_img_org = cv2.imread('../data/test_image/test.jpg')
+            # input_img_org = cv2.cvtColor(input_img_org, cv2.COLOR_BGR2RGB)
+            input_img_org = Image.open('../data/test_image/test.jpg').convert("RGB")
+            input_img = input_img_org.resize((256, 256))
+            # input_img = cv2.resize(input_img_org, (256, 256), interpolation=cv2.INTER_LINEAR)
             input_img = torch.from_numpy(input_img)
             input_img = input_img.unsqueeze(0)
             input_img = input_img.permute(0, 3, 1, 2)

@@ -103,6 +103,7 @@ class Decoder(nn.Module):
             output = self.linear(self.dropout(h))
             output = output.view(batch_size, -1)
             predicted_word_idx = output.argmax(dim=1)
+            print(predicted_word_idx.item())
             captions.append(predicted_word_idx.item())
             if vocab.itos[predicted_word_idx.item()] == "<EOS>":
                 break

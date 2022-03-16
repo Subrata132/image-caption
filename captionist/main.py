@@ -17,6 +17,7 @@ def main():
     parser.add_argument("--learning_rate", default=0.0003, type=float)
     parser.add_argument("--img_dir",  type=str)
     parser.add_argument("--caption_dir", type=str)
+    parser.add_argument("--model_dir", default='', type=str)
     args = parser.parse_args()
     train = args.train
     parameters = {
@@ -30,9 +31,9 @@ def main():
         'num_epoch': args.num_epoch,
         'learning_rate': args.learning_rate,
         'img_dir': args.img_dir,
-        'caption_dir': args.caption_dir
+        'caption_dir': args.caption_dir,
+        'model_dir': args.model_dir
     }
-    print(parameters)
     trainer(train, parameters=parameters)
 
 

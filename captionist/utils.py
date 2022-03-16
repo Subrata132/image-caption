@@ -13,10 +13,10 @@ def parameter_loader():
 def save_model(model, parameters, epoch):
     model_state = {
         'num_epoch': epoch,
-        'embed_size': parameters['network_parameters']['embed_size'],
-        'attention_dim': parameters['network_parameters']['attention_dim'],
-        'encoder_dim': parameters['network_parameters']['encoder_dim'],
-        'decoder_dim': parameters['network_parameters']['decoder_dim'],
+        'embed_size': parameters['embed_size'],
+        'attention_dim': parameters['attention_dim'],
+        'encoder_dim': parameters['encoder_dim'],
+        'decoder_dim': parameters['decoder_dim'],
         'state_dict': model.state_dict()
     }
     model_name = f'model_{epoch}.pth'
