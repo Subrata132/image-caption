@@ -34,4 +34,13 @@ def show_image(img, title=None):
     plt.imshow(img)
     if title is not None:
         plt.title(title)
-    plt.pause(0.001)
+    plt.show()
+
+
+def view_image(img, caption):
+    plt.figure(figsize=(12, 7))
+    plt.imshow(img)
+    plt.title(caption)
+    plt.xticks([])
+    plt.yticks([])
+    plt.show()
