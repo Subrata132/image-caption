@@ -12,7 +12,7 @@ def main():
     parser.add_argument("--drop_rate", default=0.3, type=float)
     parser.add_argument("--batch_size", default=32, type=int)
     parser.add_argument("--num_workers", default=0, type=int)
-    parser.add_argument("--num_epoch", default=2 ,type=int)
+    parser.add_argument("--num_epoch", default=2, type=int)
     parser.add_argument("--learning_rate", default=0.0003, type=float)
     parser.add_argument("--img_dir", default='../data/Images/', type=str)
     parser.add_argument("--caption_dir", default='../data/captions.txt', type=str)
