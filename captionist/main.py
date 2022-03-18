@@ -1,6 +1,5 @@
 import argparse
-# from trainer import trainer
-from trainer_kaggle import trainer
+from trainer import trainer
 
 
 def main():
@@ -11,13 +10,13 @@ def main():
     parser.add_argument("--decoder_dim", default=512, type=int)
     parser.add_argument("--embed_size", default=300, type=int)
     parser.add_argument("--drop_rate", default=0.3, type=float)
-    parser.add_argument("--batch_size", type=int)
+    parser.add_argument("--batch_size", default=32, type=int)
     parser.add_argument("--num_workers", default=0, type=int)
-    parser.add_argument("--num_epoch", type=int)
+    parser.add_argument("--num_epoch", default=2 ,type=int)
     parser.add_argument("--learning_rate", default=0.0003, type=float)
-    parser.add_argument("--img_dir",  type=str)
-    parser.add_argument("--caption_dir", type=str)
-    parser.add_argument("--model_dir", default='', type=str)
+    parser.add_argument("--img_dir", default='../data/Images/', type=str)
+    parser.add_argument("--caption_dir", default='../data/captions.txt', type=str)
+    parser.add_argument("--model_dir", default='model_data/saved_model.pth', type=str)
     args = parser.parse_args()
     train = args.train
     parameters = {

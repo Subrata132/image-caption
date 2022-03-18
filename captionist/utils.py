@@ -1,13 +1,5 @@
-import yaml
 import torch
-from datetime import datetime
 import matplotlib.pyplot as plt
-
-
-def parameter_loader():
-    with open('config.yml') as file:
-        parameters = yaml.load(file, Loader=yaml.FullLoader)
-    return parameters
 
 
 def save_model(model, parameters, epoch):
@@ -34,13 +26,27 @@ def show_image(img, title=None):
     plt.imshow(img)
     if title is not None:
         plt.title(title)
-    plt.show()
+    plt.pause(0.001)
 
 
 def view_image(img, caption):
-    plt.figure(figsize=(12, 7))
+    plt.figure()
     plt.imshow(img)
     plt.title(caption)
     plt.xticks([])
     plt.yticks([])
-    plt.show()
+
+
+def plot_attention(img, result, attention_plot):
+    temp_image = img
+    fig = plt.figure(figsize=(10, 10))
+    len_result = len(result)
+    for l in range(len_result):
+        temp_att = attention_plot[l].reshape(8, 8)
+        ax = fig.add_subplot(len_result // 2, len_result // 2, l + 1)
+        ax.set_title(result[l], fontsize=12)
+        img = ax.imshow(temp_image)
+        ax.imshow(temp_att, cmap='gray', alpha=0.7, extent=img.get_extent())
+        ax.set_xticks([], minor=False)
+        ax.set_yticks([], minor=False)
+    plt.tight_layout()
