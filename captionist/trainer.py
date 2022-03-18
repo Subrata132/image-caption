@@ -68,7 +68,7 @@ def trainer(train, parameters):
         model.load_state_dict(torch.load(parameters['model_dir'])['state_dict'])
         model.eval()
         with torch.no_grad():
-            input_img_org = Image.open('../data/test_image/dog.jpg').convert("RGB")
+            input_img_org = Image.open('../data/test_image/test.jpg').convert("RGB")
             transform_ = T.Compose([
                 T.Resize((256, 256)),
                 T.ToTensor(),
