@@ -1,5 +1,7 @@
 import torch
 from torch.nn.utils.rnn import pad_sequence
+from torch.utils.data import DataLoader
+from data_loader import LoadData
 
 
 class Collator:
@@ -17,3 +19,25 @@ class Collator:
         images = torch.cat(images, dim=0)
         targets = pad_sequence(targets, batch_first=self.batch_first, padding_value=self.pad_idx)
         return images, targets
+
+
+def data_loader_(df, parameters, vocabulary, transform):
+    dataset = LoadData(
+        image_dir=parameters['img_dir'],
+        caption_df=df,
+        vocab=vocabulary,
+        transform=transform
+    )
+    pad_idx = dataset.vocab.stoi['<PAD>']
+    collator = Collator(
+        pad_idx=pad_idx,
+        batch_first=True
+    )
+    data_loader = DataLoader(
+        dataset=dataset,
+        batch_size=parameters['batch_size'],
+        num_workers=parameters['num_workers'],
+        shuffle=True,
+        collate_fn=collator
+    )
+    return data_loader, dataset.vocab
