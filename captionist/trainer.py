@@ -37,14 +37,12 @@ def trainer(train, parameters):
         'vocab_size': len(vocab)
     }
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    print(device)
     model = EncoderDecoder(
         parameter_dict=parameter_dict,
         device=device).to(device=device)
     criterion = nn.CrossEntropyLoss(ignore_index=vocab.stoi["<PAD>"])
     optimizer = optim.Adam(model.parameters(), lr=parameters['learning_rate'])
     if train:
-        print('ok')
         for epoch in range(parameters['num_epoch']):
             print(f'Epoch: {epoch + 1}')
             for idx, (images, captions) in tqdm(enumerate(iter(train_data_loader))):
@@ -59,7 +57,7 @@ def trainer(train, parameters):
                     print("Epoch: {} loss: {:.5f}".format(epoch, loss.item()))
                     model.eval()
                     with torch.no_grad():
-                        dataiter = iter(train_data_loader)
+                        dataiter = iter(val_data_loader)
                         img, _ = next(dataiter)
                         features = model.image_encoder(img[0:1].to(device))
                         caps, alphas = model.decoder.generate_caption(features, vocab=vocab)
@@ -72,7 +70,7 @@ def trainer(train, parameters):
         model.load_state_dict(torch.load(parameters['model_dir'])['state_dict'])
         model.eval()
         with torch.no_grad():
-            input_img_org = Image.open('../data/test_image/dog.jpeg').convert("RGB")
+            input_img_org = Image.open('../data/test_image/dog_run.jpg').convert("RGB")
             transform_ = T.Compose([
                 T.Resize((256, 256)),
                 T.ToTensor(),

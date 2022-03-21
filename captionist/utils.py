@@ -55,13 +55,13 @@ def plot_attention(img, result, attention_plot):
 
 def load_train_test_val_data(all_data_df, train_pct=0.7, val_pct=0.1, test_pct=0.2, seed=1234):
     np.random.seed(seed=seed)
-    all_data_df = all_data_df.sample(frac=1).reset_index(drop=True)
+    all_data_df = all_data_df.sample(frac=1).reset_index()
     total_data_len = len(all_data_df)
     train_end = int(train_pct*total_data_len)
     val_end = train_end + int(val_pct*total_data_len)
-    train_df = all_data_df.iloc[:train_end]
-    val_df = all_data_df.iloc[train_end:val_end]
-    test_df = all_data_df.iloc[val_end:]
+    train_df = all_data_df.iloc[:train_end].reset_index()
+    val_df = all_data_df.iloc[train_end:val_end].reset_index()
+    test_df = all_data_df.iloc[val_end:].reset_index()
     return train_df, val_df, test_df
 
 
