@@ -62,7 +62,6 @@ def trainer(train, parameters):
                         features = model.image_encoder(img[0:1].to(device))
                         caps, alphas = model.decoder.generate_caption(features, vocab=vocab)
                         caption = ' '.join(caps)
-                        print(caption)
                         show_image(img[0], title=caption)
                     model.train()
             save_model(model=model, parameters=parameters, epoch=epoch + 1)
