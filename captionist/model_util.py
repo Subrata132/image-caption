@@ -20,7 +20,7 @@ def validator(model, data_loader, vocab, device):
     print('Validating................')
     count = 0
     sum_score = 0
-    for idx, (images, captions) in tqdm(enumerate(iter(data_loader))):
+    for idx, (images, captions) in enumerate(tqdm(iter(data_loader))):
         for i in range(images.shape[0]):
             features = model.image_encoder(images[i:i+1].to(device))
             caps, _ = model.decoder.generate_caption(features, vocab=vocab)

@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 from PIL import Image
 from tqdm import tqdm
 import matplotlib.pyplot as plt
@@ -44,12 +45,13 @@ def trainer(train, parameters):
     training_loss = []
     training_bleu = []
     validation_bleu = []
+    results = {}
     if train:
         for epoch in range(parameters['num_epoch']):
             print(f'Epoch: {epoch + 1}')
             epoch_loss = 0
             counter = 0
-            for idx, (images, captions) in tqdm(enumerate(iter(train_data_loader))):
+            for idx, (images, captions) in enumerate(tqdm(iter(train_data_loader))):
                 images, captions = images.to(device=device), captions.to(device=device)
                 optimizer.zero_grad()
                 outputs, attentions = model(images, captions)
@@ -66,7 +68,11 @@ def trainer(train, parameters):
                 training_bleu.append(validator(model=model, data_loader=train_data_loader, vocab=vocab, device=device))
                 validation_bleu.append(validator(model=model, data_loader=val_data_loader, vocab=vocab, device=device))
             model.train()
-
+        results['loss'] = training_loss
+        results['train_bleu'] = training_bleu
+        results['val_bleu'] = validation_bleu
+        with open('model_data/result_data.json', 'w') as f:
+            json.dump(results, f)
 
     else:
         model.load_state_dict(torch.load(parameters['model_dir'])['state_dict'])
