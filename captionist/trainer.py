@@ -1,17 +1,16 @@
 import pandas as pd
+from PIL import Image
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from PIL import Image
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
 import torchvision.transforms as T
 from vocab_builder import Vocabulary
-from data_loader import LoadData
-from data_util import Collator, data_loader_
+from data_util import data_loader_
 from model import EncoderDecoder
-from utils import save_model, view_image, plot_attention, load_train_test_val_data, show_image
+from utils import save_model, view_image, plot_attention, load_train_test_val_data
+from model_util import validator
 
 
 def trainer(train, parameters):
@@ -42,9 +41,14 @@ def trainer(train, parameters):
         device=device).to(device=device)
     criterion = nn.CrossEntropyLoss(ignore_index=vocab.stoi["<PAD>"])
     optimizer = optim.Adam(model.parameters(), lr=parameters['learning_rate'])
+    training_loss = []
+    training_bleu = []
+    validation_bleu = []
     if train:
         for epoch in range(parameters['num_epoch']):
             print(f'Epoch: {epoch + 1}')
+            epoch_loss = 0
+            counter = 0
             for idx, (images, captions) in tqdm(enumerate(iter(train_data_loader))):
                 images, captions = images.to(device=device), captions.to(device=device)
                 optimizer.zero_grad()
@@ -53,18 +57,17 @@ def trainer(train, parameters):
                 loss = criterion(outputs.view(-1, parameter_dict['vocab_size']), targets.reshape(-1))
                 loss.backward()
                 optimizer.step()
-                if (idx + 1) % 100 == 0:
-                    print("Epoch: {} loss: {:.5f}".format(epoch, loss.item()))
-                    model.eval()
-                    with torch.no_grad():
-                        dataiter = iter(val_data_loader)
-                        img, _ = next(dataiter)
-                        features = model.image_encoder(img[0:1].to(device))
-                        caps, alphas = model.decoder.generate_caption(features, vocab=vocab)
-                        caption = ' '.join(caps)
-                        show_image(img[0], title=caption)
-                    model.train()
+                epoch_loss = epoch_loss + loss.item()
+                counter = counter + 1
             save_model(model=model, parameters=parameters, epoch=epoch + 1)
+            training_loss.append(epoch_loss/counter)
+            model.eval()
+            with torch.no_grad():
+                training_bleu.append(validator(model=model, data_loader=train_data_loader, vocab=vocab, device=device))
+                validation_bleu.append(validator(model=model, data_loader=val_data_loader, vocab=vocab, device=device))
+            model.train()
+
+
     else:
         model.load_state_dict(torch.load(parameters['model_dir'])['state_dict'])
         model.eval()
