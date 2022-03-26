@@ -11,7 +11,7 @@ from vocab_builder import Vocabulary
 from data_util import data_loader_
 from model import EncoderDecoder
 from utils import save_model, view_image, plot_attention, load_train_test_val_data
-from model_util import validator
+from model_util import validator, get_actual_caption, get_sentence_bleu
 
 
 def trainer(train, parameters):
@@ -77,6 +77,17 @@ def trainer(train, parameters):
     else:
         model.load_state_dict(torch.load(parameters['model_dir'])['state_dict'])
         model.eval()
+        # bleu_scores = {
+        #     'test_set': []
+        # }
+        # for idx, (images, captions) in enumerate(tqdm(iter(test_data_loader))):
+        #     for i in range(images.shape[0]):
+        #         features = model.image_encoder(images[i:i + 1].to(device))
+        #         caps, _ = model.decoder.generate_caption(features, vocab=vocab)
+        #         actual_caption = get_actual_caption(captions[i], vocab)
+        #         bleu_scores['test_set'].append(get_sentence_bleu([actual_caption[:-1]], caps[:-2]))
+        # with open('model_data/test_blue_data.json', 'w') as f:
+        #     json.dump(bleu_scores, f)
         with torch.no_grad():
             input_img_org = Image.open('../data/test_image/dog_run.jpg').convert("RGB")
             transform_ = T.Compose([
