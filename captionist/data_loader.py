@@ -1,7 +1,10 @@
 import pandas as pd
 from PIL import Image
-from vocab_builder import Vocabulary
 import torch
+try:
+    from .vocab_builder import Vocabulary
+except:
+    from vocab_builder import Vocabulary
 
 
 class LoadData:

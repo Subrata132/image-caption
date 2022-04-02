@@ -1,7 +1,10 @@
 import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
-from data_loader import LoadData
+try:
+    from .data_loader import LoadData
+except:
+    from data_loader import LoadData
 
 
 class Collator:
