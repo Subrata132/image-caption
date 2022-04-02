@@ -3,8 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <title>Image Caption</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
 </head>
 <body>
-<h1> Working</h1>
+<div style="padding: 10px; background: white">
+    <div class="card" style="background: black; padding: 20px">
+        <div class="card-header" style="background: floralwhite; padding-bottom: 10px">
+            <h5 style="font-size: large">
+                Upload image
+            </h5>
+        </div>
+        <label class="form-label" for="uploader"></label>
+        <input type="file" class="form-control" id="uploader" onchange="preview()"
+               style="padding: 10px; background: antiquewhite"/>
+    </div>
+    <div style="height: 20px"></div>
+    <div class="row">
+        <div class="col">
+            <div class="card" id="col_1" style="background: black; padding: 2px; visibility: hidden">
+                <img id="frame" style="object-fit: contain; width: 100%; height: 100%"/>
+            </div>
+            <div class="card" id="caption-form" style="background: black; padding: 5px; visibility: hidden">
+                <div class="form-group">
+                    <input type="text" id="input-caption" class="form-control">
+                    <div style="height: 5px"></div>
+                    <button class="btn btn-primary" onclick="post_image()"> Submit</button>
+                </div>
+            </div>
+            <div id="caption-given" style="visibility: hidden">
+                <h5 id="caption"></h5>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card" id="col_2" style="background: black; padding: 2px; visibility: hidden">
+                 <img id="attention" style="object-fit: contain; width: 100%; height: 100%"/>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script type="text/javascript">
+    function preview() {
+        const col_1 = document.getElementById("col_1");
+        col_1.style.visibility = "visible";
+        const frame = document.getElementById("frame");
+        frame.src = window.URL.createObjectURL(event.target.files[0]);
+        const caption_form = document.getElementById("caption-form");
+        caption_form.style.visibility = "visible";
+    }
+
+    function post_image() {
+        const caption_given = document.getElementById("input-caption").value;
+        const caption_form = document.getElementById("caption-form");
+        caption_form.style.visibility = "hidden";
+        const caption_div = document.getElementById("caption-given");
+        document.getElementById("caption").innerHTML = "Caption: " + caption_given;
+        caption_form.innerHTML = caption_div.innerHTML;
+        caption_div.style.visibility = "visible";
+        const attention = document.getElementById("col_2");
+        const atten_img = document.getElementById("attention");
+        attention.style.visibility = "visible";
+        atten_img.src = "https://www.w3schools.com/images/w3schools_green.jpg";
+    }
+</script>
 </html>
