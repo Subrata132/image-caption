@@ -11,10 +11,18 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from .model_loader import Explainer
 
+
+flag = os.environ.get('FLAG', False)
+if not flag:
+    os.environ['FLAG'] = '1'
+    print('Not loaded')
+else:
+    CAP_OBJ = Explainer()
+    print('Loaded')
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -23,9 +31,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '4l7ikk!!su+4+d1w5^hx@p@&68z%ne8iyno$p^%z%8hvyu6h9k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
+
+
 
 
 # Application definition

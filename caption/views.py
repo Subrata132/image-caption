@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,4 +14,5 @@ class ImageView(APIView):
     def post(self, request):
         image = request.FILES['image']
         new_image = Image.objects.create(image=image)
-        return Response({}, status=status.HTTP_201_CREATED)
+        caption = settings.CAP_OBJ.caption_generator(new_image.image.name.split('/')[-1])
+        return Response(caption, status=status.HTTP_201_CREATED)
