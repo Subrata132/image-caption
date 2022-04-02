@@ -14,6 +14,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+            crossorigin="anonymous">
+    </script>
 </head>
 <body>
 <div style="padding: 10px; background: white">
@@ -28,7 +33,7 @@
                style="padding: 10px; background: antiquewhite"/>
     </div>
     <div style="height: 20px"></div>
-    <div class="row" >
+    <div class="row">
         <div class="col">
             <div class="card" id="col_1" style="background: black; padding: 2px; visibility: hidden">
                 <img id="frame" style="object-fit: contain; width: 100%; height: 100%"/>
@@ -46,7 +51,7 @@
         </div>
         <div class="col">
             <div class="card" id="col_2" style="background: black; padding: 2px; visibility: hidden">
-                 <img id="attention" style="object-fit: contain; width: 100%; height: 100%"/>
+                <img id="attention" style="object-fit: contain; width: 100%; height: 100%"/>
             </div>
         </div>
     </div>
@@ -61,7 +66,9 @@
         const caption_form = document.getElementById("caption-form");
         caption_form.style.visibility = "visible";
     }
+</script>
 
+<script type="text/javascript">
     function post_image() {
         const caption_given = document.getElementById("input-caption").value;
         const caption_form = document.getElementById("caption-form");
@@ -70,10 +77,28 @@
         document.getElementById("caption").innerHTML = "Caption: " + caption_given;
         caption_form.innerHTML = caption_div.innerHTML;
         caption_div.style.visibility = "visible";
-        const attention = document.getElementById("col_2");
-        const atten_img = document.getElementById("attention");
-        attention.style.visibility = "visible";
-        atten_img.src = "https://www.w3schools.com/images/w3schools_green.jpg";
+        // var file_to_send = {
+        //     'data': $('#uploader')[0].files
+        // };
+        var data = new FormData();
+        data.append('file', $('#uploader')[0].files[0]);
+        // data.append('csrfmiddlewaretoken': "{{ csrf_token }}");
+        $.ajax({
+            url: 'upload/',
+            method: "POST",
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: data,
+            enctype: 'multipart/form-data',
+            success: function (x) {
+                console.log(x);
+            }
+        })
+        // const attention = document.getElementById("col_2");
+        // const atten_img = document.getElementById("attention");
+        // attention.style.visibility = "visible";
+        // atten_img.src = "https://www.w3schools.com/images/w3schools_green.jpg";
     }
 </script>
 </html>
