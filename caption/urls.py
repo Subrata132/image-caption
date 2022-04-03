@@ -3,6 +3,5 @@ from .views import *
 
 urlpatterns = [
     path('', test_view, name='test_view'),
-    # path('upload', ImageView.as_view(), name='upload'),
-    path('upload', image_web, name='upload')
+    path('upload', ImageView.as_view(), name='upload'),
 ]

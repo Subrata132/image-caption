@@ -31,6 +31,7 @@
         <label class="form-label" for="uploader"></label>
         <input type="file" class="form-control" id="uploader" onchange="preview()"
                style="padding: 10px; background: antiquewhite"/>
+        <button class="btn btn-primary" onclick="post_image()">Submit</button>
     </div>
     <div style="height: 20px"></div>
     <div class="row">
@@ -38,21 +39,23 @@
             <div class="card" id="col_1" style="background: black; padding: 2px; visibility: hidden">
                 <img id="frame" style="object-fit: contain; width: 100%; height: 100%"/>
             </div>
-            <div class="card" id="caption-form" style="background: black; padding: 5px; visibility: hidden">
-                <div class="form-group">
-                    <input type="text" id="input-caption" class="form-control">
-                    <div style="height: 5px"></div>
-                    <button class="btn btn-primary" onclick="post_image()"> Submit</button>
-                </div>
-            </div>
-            <div id="caption-given" style="visibility: hidden">
-                <h5 id="caption"></h5>
-            </div>
+            <!--            <div class="card" id="caption-form" style="background: black; padding: 5px; visibility: hidden">-->
+            <!--                <div class="form-group">-->
+            <!--                    <input type="text" id="input-caption" class="form-control">-->
+            <!--                    <div style="height: 5px"></div>-->
+            <!--                    <button class="btn btn-primary" onclick="post_image()"> Submit</button>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <!--            <div id="caption-given" style="visibility: hidden">-->
+            <!--                <h5 id="caption"></h5>-->
+            <!--            </div>-->
         </div>
         <div class="col">
             <div class="card" id="col_2" style="background: black; padding: 2px; visibility: hidden">
                 <img id="attention" style="object-fit: contain; width: 100%; height: 100%"/>
             </div>
+            <h5 id="caption_get" style="font-size: large">
+            </h5>
         </div>
     </div>
 </div>
@@ -63,42 +66,33 @@
         col_1.style.visibility = "visible";
         const frame = document.getElementById("frame");
         frame.src = window.URL.createObjectURL(event.target.files[0]);
-        const caption_form = document.getElementById("caption-form");
-        caption_form.style.visibility = "visible";
+        // const caption_form = document.getElementById("caption-form");
+        // caption_form.style.visibility = "visible";
     }
 </script>
 
 <script type="text/javascript">
     function post_image() {
-        const caption_given = document.getElementById("input-caption").value;
-        const caption_form = document.getElementById("caption-form");
-        caption_form.style.visibility = "hidden";
-        const caption_div = document.getElementById("caption-given");
-        document.getElementById("caption").innerHTML = "Caption: " + caption_given;
-        caption_form.innerHTML = caption_div.innerHTML;
-        caption_div.style.visibility = "visible";
-        // var file_to_send = {
-        //     'data': $('#uploader')[0].files
-        // };
         var data = new FormData();
-        data.append('file', $('#uploader')[0].files[0]);
-        // data.append('csrfmiddlewaretoken': "{{ csrf_token }}");
-        $.ajax({
-            url: 'upload/',
-            method: "POST",
-            processData: false,
-            contentType: false,
-            cache: false,
-            data: data,
-            enctype: 'multipart/form-data',
-            success: function (x) {
-                console.log(x);
+        var input = document.querySelector('input[type="file"]');
+        data.append('image', input.files[0]);
+        fetch('/upload', {
+            method: 'POST',
+            body: data
+        }).then(
+            response => response.json()
+        ).then(
+            (data) => {
+                const col_2 = document.getElementById("col_2");
+                col_2.style.visibility = "visible";
+                const attn_image = document.getElementById("attention");
+                attn_image.src = 'file:///http://0.0.0.0:8001/' + data['att_url'];
+                // attn_image.src = "https://www.w3schools.com/images/w3schools_green.jpg";
+                const cap_get = document.getElementById("caption_get");
+                cap_get.innerText = data['caption'];
+
             }
-        })
-        // const attention = document.getElementById("col_2");
-        // const atten_img = document.getElementById("attention");
-        // attention.style.visibility = "visible";
-        // atten_img.src = "https://www.w3schools.com/images/w3schools_green.jpg";
+        )
     }
 </script>
 </html>
