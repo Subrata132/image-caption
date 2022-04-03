@@ -34,7 +34,7 @@
         <button class="btn btn-primary" onclick="post_image()">Submit</button>
     </div>
     <div style="height: 20px"></div>
-    <div class="row">
+    <div class="row" style="height: 500px">
         <div class="col">
             <div class="card" id="col_1" style="background: black; padding: 2px; visibility: hidden">
                 <img id="frame" style="object-fit: contain; width: 100%; height: 100%"/>
@@ -52,10 +52,10 @@
         </div>
         <div class="col">
             <div class="card" id="col_2" style="background: black; padding: 2px; visibility: hidden">
+                <h5 id="caption_get" style="font-size: large; color: white">
+            </h5>
                 <img id="attention" style="object-fit: contain; width: 100%; height: 100%"/>
             </div>
-            <h5 id="caption_get" style="font-size: large">
-            </h5>
         </div>
     </div>
 </div>
@@ -86,8 +86,7 @@
                 const col_2 = document.getElementById("col_2");
                 col_2.style.visibility = "visible";
                 const attn_image = document.getElementById("attention");
-                attn_image.src = 'file:///http://0.0.0.0:8001/' + data['att_url'];
-                // attn_image.src = "https://www.w3schools.com/images/w3schools_green.jpg";
+                attn_image.src = 'http://192.168.101.85:8001/attention_images/' + data['att_url'];
                 const cap_get = document.getElementById("caption_get");
                 cap_get.innerText = data['caption'];
 

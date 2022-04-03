@@ -130,3 +130,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+#http://192.168.101.85:8001/attention_images/attention_image_27.png
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'attention_images').replace('\\', '/')
+MEDIA_URL = '/attention_images/'

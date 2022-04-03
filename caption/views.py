@@ -15,4 +15,5 @@ class ImageView(APIView):
         image = request.FILES['image']
         new_image = Image.objects.create(image=image)
         data = settings.CAP_OBJ.caption_generator(new_image.image.name.split('/')[-1])
+        print(data)
         return Response(data, status=status.HTTP_201_CREATED)

@@ -11,7 +11,7 @@ from captionist.model import EncoderDecoder
 
 
 def save_attention(img_name, result, attention_plot):
-    temp_image = Image.open(f'uploaded_images/{img_name}').convert("RGB")
+    temp_image = Image.open(f'attention_images/uploaded_images/{img_name}').convert("RGB")
     fig = plt.figure(figsize=(10, 10))
     len_result = len(result)
     for l in range(len_result):
@@ -66,7 +66,9 @@ class Explainer:
         self.model, self.device, self.vocab = load_model(self.parameters)
 
     def caption_generator(self, image_name):
-        image = Image.open(f'uploaded_images/{image_name}').convert("RGB")
+
+
+        image = Image.open(f'attention_images/uploaded_images/{image_name}').convert("RGB")
         with torch.no_grad():
             transform_ = T.Compose([
                 T.Resize((256, 256)),
@@ -80,6 +82,6 @@ class Explainer:
             save_attention(image_name, caps, alphas)
             data = {
                 'caption': ' '.join(caps[:-1]),
-                'att_url': f'attention_images/attention_{image_name.split(".")[0]}.png'
+                'att_url': f'attention_{image_name.split(".")[0]}.png'
             }
             return data
