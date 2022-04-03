@@ -12,6 +12,8 @@ venv/
 .idea/
 __pycache__/
 data/
+uploaded_images/
+attention_images/
 *.py[cod]
 
 
