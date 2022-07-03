@@ -34,27 +34,17 @@
         <button class="btn btn-primary" onclick="post_image()">Submit</button>
     </div>
     <div style="height: 20px"></div>
-    <div class="row" style="height: 500px">
-        <div class="col">
-            <div class="card" id="col_1" style="background: black; padding: 2px; visibility: hidden">
-                <img id="frame" style="object-fit: contain; width: 100%; height: 100%"/>
+    <div class="row" style="display: flex;">
+        <div class="col" style="flex: 1">
+            <div class="card" id="col_1" style="background: black; padding: 2px; visibility: hidden; height: 500px">
+                <img id="frame"  width="100%" height="100%"/>
             </div>
-            <!--            <div class="card" id="caption-form" style="background: black; padding: 5px; visibility: hidden">-->
-            <!--                <div class="form-group">-->
-            <!--                    <input type="text" id="input-caption" class="form-control">-->
-            <!--                    <div style="height: 5px"></div>-->
-            <!--                    <button class="btn btn-primary" onclick="post_image()"> Submit</button>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div id="caption-given" style="visibility: hidden">-->
-            <!--                <h5 id="caption"></h5>-->
-            <!--            </div>-->
         </div>
-        <div class="col">
-            <div class="card" id="col_2" style="background: black; padding: 2px; visibility: hidden">
+        <div class="col" style="flex: 1;">
+            <div class="card" id="col_2" style="background: black; padding: 2px; visibility: hidden; height: 500px">
                 <h5 id="caption_get" style="font-size: large; color: white">
             </h5>
-                <img id="attention" style="object-fit: contain; width: 100%; height: 100%"/>
+                <img id="attention" height="100%" width="100%"/>
             </div>
         </div>
     </div>
@@ -73,6 +63,7 @@
 
 <script type="text/javascript">
     function post_image() {
+        var host = 'http://' + window.location.host + '/attention_images/';
         var data = new FormData();
         var input = document.querySelector('input[type="file"]');
         data.append('image', input.files[0]);
@@ -86,7 +77,7 @@
                 const col_2 = document.getElementById("col_2");
                 col_2.style.visibility = "visible";
                 const attn_image = document.getElementById("attention");
-                attn_image.src = 'http://192.168.101.85:8001/attention_images/' + data['att_url'];
+                attn_image.src = host + data['att_url'];
                 const cap_get = document.getElementById("caption_get");
                 cap_get.innerText = data['caption'];
 
